@@ -10,15 +10,15 @@ import com.example.healthtrackr.utils.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
+    private final Set<String> tokenBlocklist = new HashSet<>();
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
@@ -78,10 +78,11 @@ public class AuthService {
         // Trả về LoginResponse chứa cả token, email và username
         return new LoginResponse(token, user.getEmail(), user.getUsername());
     }
+    public void logout(String token) {
+        tokenBlocklist.add(token);
+    }
 
-
-
-
-
-
+    public boolean isTokenBlocked(String token) {
+        return tokenBlocklist.contains(token);
+    }
 }

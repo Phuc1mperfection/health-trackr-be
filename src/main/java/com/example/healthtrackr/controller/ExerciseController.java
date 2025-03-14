@@ -47,9 +47,9 @@ public class ExerciseController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String bodyPart,
             @RequestParam(required = false) String equipment,
-            @RequestParam(required = false) String difficulty,
             Pageable pageable
     ) {
+        // Lấy tất cả bài tập từ API
         List<Exercise> allExercises = exerciseApiService.getExercisesFromApi();
 
         // Lọc dữ liệu theo các tiêu chí
@@ -65,6 +65,4 @@ public class ExerciseController {
         List<Exercise> pagedList = filteredExercises.subList(start, end);
 
         return new PageImpl<>(pagedList, pageable, filteredExercises.size());
-    }
-
-}
+    }}

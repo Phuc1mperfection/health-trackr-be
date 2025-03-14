@@ -6,12 +6,11 @@ import com.example.healthtrackr.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173") // Cho phép React truy cập
+
 public class AuthController {
     private final AuthService authService;
 
@@ -28,6 +27,12 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestBody AuthRequest request) {
         LoginResponse loginResponse = authService.login(request);
         return ResponseEntity.ok(loginResponse);
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7); // Bỏ "Bearer "
+        authService.logout(jwt); // Xử lý token (thêm vào blocklist nếu cần)
+        return ResponseEntity.ok("Logged out successfully");
     }
 
 }

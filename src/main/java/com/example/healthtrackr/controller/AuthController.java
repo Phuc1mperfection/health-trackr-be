@@ -1,7 +1,7 @@
 package com.example.healthtrackr.controller;
 
-import com.example.healthtrackr.dto.AuthRequest;
-import com.example.healthtrackr.dto.LoginResponse;
+import com.example.healthtrackr.dto.request.AuthRequest;
+import com.example.healthtrackr.dto.response.LoginResponse;
 import com.example.healthtrackr.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +33,12 @@ public class AuthController {
         String jwt = token.substring(7); // Bỏ "Bearer "
         authService.logout(jwt); // Xử lý token (thêm vào blocklist nếu cần)
         return ResponseEntity.ok("Logged out successfully");
+    }
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
+        String jwt = refreshToken.substring(7); // Bỏ "Bearer "
+        LoginResponse response = authService.refreshToken(jwt);
+        return ResponseEntity.ok(response);
     }
 
 }

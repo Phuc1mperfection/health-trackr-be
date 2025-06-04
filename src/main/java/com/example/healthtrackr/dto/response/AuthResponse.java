@@ -1,4 +1,4 @@
-package com.example.healthtrackr.dto;
+package com.example.healthtrackr.dto.response;
 
 import com.example.healthtrackr.entity.Token;
 import lombok.*;

@@ -24,7 +24,14 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
-
+    public String generateRefreshToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30)) // 30 ngày
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
     public String extractUsername(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
@@ -60,4 +67,6 @@ public class JwtUtil {
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
+
+
 }

@@ -12,14 +12,21 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(AppException.class)
     public ResponseEntity<Map<String, Object>> handleAppException(AppException ex) {
         Map<String, Object> response = new HashMap<>();
         ErrorCode errorCode = ex.getErrorCode();
 
         response.put("Error code", errorCode.getCode());
-        response.put("Message", errorCode.getMessage());
+
+        // Sử dụng thông báo tùy chỉnh nếu có, nếu không sử dụng thông báo từ errorCode
+        String message = ex.getMessage();
+        if (message.equals(errorCode.toString())) {
+            // Nếu thông báo là tên của errorCode, sử dụng thông báo từ errorCode
+            message = errorCode.getMessage();
+        }
+
+        response.put("message", message);
 
         return new ResponseEntity<>(response, errorCode.getStatusCode());
     }

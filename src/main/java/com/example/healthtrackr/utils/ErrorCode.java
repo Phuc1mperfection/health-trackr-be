@@ -5,32 +5,35 @@ import org.springframework.http.HttpStatusCode;
 
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
-    INVALID_KEY(9998, "Invalid constraint key", HttpStatus.INTERNAL_SERVER_ERROR), PYTHON_SERVER_NOT_CONNECT(9997, "Cannot connect to Python server", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_KEY(9998, "Invalid constraint key", HttpStatus.INTERNAL_SERVER_ERROR),
+    PYTHON_SERVER_NOT_CONNECT(9997, "Cannot connect to Python server", HttpStatus.INTERNAL_SERVER_ERROR),
 
     UNAUTHENTICATED(1000, "User authentication failed", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1001, "You do not have permission to access", HttpStatus.FORBIDDEN),
     TOKEN_EXPIRED(1002, "Token has expired", HttpStatus.FORBIDDEN),
     REFRESH_TOKEN_EXPIRED(1003, "Refresh token has expired", HttpStatus.FORBIDDEN),
     REFRESH_TOKEN_NON_EXISTED(1004, "Refresh token does not exist", HttpStatus.NOT_FOUND),
-    TOKEN_NOT_VALID(1005, "Token is not valid", HttpStatus.FORBIDDEN),
-
-    // Validate user
+    TOKEN_NOT_VALID(1005, "Token is not valid", HttpStatus.FORBIDDEN), // Validate user
     USER_EXISTED(1010, "User already exists", HttpStatus.BAD_REQUEST),
     EMAIL_EXITED(1011, "Email already exists", HttpStatus.BAD_REQUEST),
     USER_NON_EXISTED(1012, "User does not exist", HttpStatus.NOT_FOUND),
     PASSWORD_NOT_MATCH(1018, "Password and retype password do not match", HttpStatus.BAD_REQUEST),
-    USERNAME_NOT_NULL(1029, "Username cannot be empty", HttpStatus.BAD_REQUEST),
+    USERNAME_NOT_NULL(1029, "Username cannot be empty", HttpStatus.BAD_REQUEST), // Exercise errors
+    BODY_PART_NOT_FOUND(2000, "No exercises found for the specified body part", HttpStatus.NOT_FOUND),
+    EQUIPMENT_NOT_FOUND(2001, "No exercises found for the specified equipment", HttpStatus.NOT_FOUND),
+    TARGET_NOT_FOUND(2002, "No exercises found for the specified target muscle", HttpStatus.NOT_FOUND),
     USERNAME_SIZE(1030, "Username must be between 3 and 50 characters", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_NULL(1031, "Email cannot be empty", HttpStatus.BAD_REQUEST),
     WRONG_EMAIL_FORMAT(1032, "Incorrect email format", HttpStatus.BAD_REQUEST),
     PASSWORD_NOT_NULL(1033, "Password cannot be empty", HttpStatus.BAD_REQUEST),
-    USERNAME_CHAR(1034, "Username only letters, numbers, underlines, and horizontal lines are allowed", HttpStatus.BAD_REQUEST),
+    USERNAME_CHAR(1034, "Username only letters, numbers, underlines, and horizontal lines are allowed",
+            HttpStatus.BAD_REQUEST),
     PASSWORD_SIZE(1035, "Password must be at least 8 characters long", HttpStatus.BAD_REQUEST),
-    PASSWORD_CHAR(1036, "Password must contain uppercase letters, lowercase letters, numbers, and special characters", HttpStatus.BAD_REQUEST),
+    PASSWORD_CHAR(1036, "Password must contain uppercase letters, lowercase letters, numbers, and special characters",
+            HttpStatus.BAD_REQUEST),
     LOCATION_SIZE(1037, "Location is maximum 100 characters long", HttpStatus.BAD_REQUEST),
     ABOUTME_SIZE(1038, "About me is maximum 500 characters long", HttpStatus.BAD_REQUEST),
     SLOGAN_SIZE(1039, "Slogan is maximum 50 characters long", HttpStatus.BAD_REQUEST),
-
 
     ;
 

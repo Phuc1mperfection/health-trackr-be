@@ -1,4 +1,4 @@
-package com.example.healthtrackr.dto;
+package com.example.healthtrackr.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

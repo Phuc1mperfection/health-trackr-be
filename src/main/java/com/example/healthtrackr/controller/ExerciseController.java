@@ -76,28 +76,45 @@ public class ExerciseController {
         return exerciseService.getTargetList();
     }
 
+    /**
+     * Endpoint for searching exercises with pagination and filters (name, bodyPart,
+     * equipment)
+     * Returns a PageResponse with content and pagination metadata
+     */
     @GetMapping("/search")
-    public Page<Exercise> searchExercises(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String bodyPart,
-            @RequestParam(required = false) String equipment,
-            Pageable pageable) {
-        // Lấy tất cả bài tập từ API
-        List<Exercise> allExercises = exerciseApiService.getExercisesFromApi();
+    public Map<String, Object> searchExercises(
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "bodyPart", required = false) String bodyPart,
+            @RequestParam(name = "equipment", required = false) String equipment,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        int maxSize = 100;
+        int safeSize = Math.min(size, maxSize);
+        Pageable pageable = PageRequest.of(page, safeSize);
 
-        // Lọc dữ liệu theo các tiêu chí
-        List<Exercise> filteredExercises = allExercises.stream()
-                .filter(e -> (name == null || e.getName().toLowerCase().contains(name.toLowerCase())))
-                .filter(e -> (bodyPart == null || e.getBodyPart().equalsIgnoreCase(bodyPart)))
-                .filter(e -> (equipment == null || e.getEquipment().equalsIgnoreCase(equipment)))
-                .collect(Collectors.toList());
+        Page<Exercise> exercisePage;
+        if (name != null && !name.isEmpty()) {
+            exercisePage = exerciseService.searchExercisesByName(name, pageable);
+        } else {
+            List<Exercise> allExercises = exerciseService.getAllExercises();
+            List<Exercise> filteredExercises = allExercises.stream()
+                    .filter(e -> (bodyPart == null || e.getBodyPart().equalsIgnoreCase(bodyPart)))
+                    .filter(e -> (equipment == null || e.getEquipment().equalsIgnoreCase(equipment)))
+                    .toList();
+            int start = (int) pageable.getOffset();
+            int end = Math.min(start + pageable.getPageSize(), filteredExercises.size());
+            List<Exercise> pagedList = (start > filteredExercises.size()) ? List.of()
+                    : filteredExercises.subList(start, end);
+            exercisePage = new PageImpl<>(pagedList, pageable, filteredExercises.size());
+        }
 
-        // Áp dụng phân trang
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), filteredExercises.size());
-        List<Exercise> pagedList = filteredExercises.subList(start, end);
-
-        return new PageImpl<>(pagedList, pageable, filteredExercises.size());
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", exercisePage.getContent());
+        response.put("totalElements", exercisePage.getTotalElements());
+        response.put("totalPages", exercisePage.getTotalPages());
+        response.put("currentPage", exercisePage.getNumber());
+        response.put("size", exercisePage.getSize());
+        return response;
     }
 
     /**

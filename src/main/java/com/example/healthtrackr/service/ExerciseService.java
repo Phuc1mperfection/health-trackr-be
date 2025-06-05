@@ -460,4 +460,32 @@ public class ExerciseService {
 
         return 100; // Default if error
     }
+
+    /**
+     * Search exercises by name using RapidAPI endpoint with pagination
+     */
+    public Page<Exercise> searchExercisesByName(String name, Pageable pageable) {
+        int limit = pageable.getPageSize();
+        int offset = pageable.getPageNumber() * pageable.getPageSize();
+        String url = rapidApiUrl + "/exercises/name/" + name + "?limit=" + limit + "&offset=" + offset;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("x-rapidapi-host", API_HOST);
+        headers.set("x-rapidapi-key", API_KEY);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                List<Exercise> exercises = parseExercises(response.getBody());
+                // Không có total count từ API, trả về size hiện tại
+                return new org.springframework.data.domain.PageImpl<>(exercises, pageable, exercises.size());
+            } else {
+                return Page.empty(pageable);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error searching exercises by name: " + e.getMessage());
+            return Page.empty(pageable);
+        }
+    }
 }
